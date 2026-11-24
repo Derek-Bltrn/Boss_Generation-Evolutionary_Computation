@@ -5,21 +5,40 @@ from src.game import config
 
 
 class Projectile:
-    def __init__(self, x, y, direction_x, direction_y):
+    def __init__(
+        self,
+        x,
+        y,
+        direction_x,
+        direction_y,
+        speed=None,
+        damage=None,
+        owner="player"
+    ):
         self.x = x
         self.y = y
+
+        self.speed = (
+            speed if speed is not None
+            else config.PLAYER_PROJECTILE_SPEED
+        )
+
+        self.damage = (
+            damage if damage is not None
+            else config.PLAYER_PROJECTILE_DAMAGE
+        )
+
+        self.owner = owner
+        self.radius = 5
 
         magnitude = math.hypot(direction_x, direction_y)
 
         if magnitude == 0:
-            self.vx = 0
-            self.vy = -config.PLAYER_PROJECTILE_SPEED
-        else:
-            self.vx = direction_x / magnitude * config.PLAYER_PROJECTILE_SPEED
-            self.vy = direction_y / magnitude * config.PLAYER_PROJECTILE_SPEED
+            direction_x, direction_y = 0, -1
+            magnitude = 1
 
-        self.radius = 5
-        self.damage = config.PLAYER_PROJECTILE_DAMAGE
+        self.vx = direction_x / magnitude * self.speed
+        self.vy = direction_y / magnitude * self.speed
 
     def update(self):
         self.x += self.vx * config.DELTA_TIME

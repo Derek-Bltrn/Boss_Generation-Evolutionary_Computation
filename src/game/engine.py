@@ -15,32 +15,45 @@ class GameEngine:
         self.finished = False
         self.winner = None
 
+    
     def update(self, move_x, move_y, shooting=False, target=None):
         if self.finished:
             return
 
-        # Update player movement and projectiles.
+        # Update player and boss.
         self.player.update(move_x, move_y)
+        self.boss.update(self.player)
 
         # Player shooting.
         if shooting and target is not None:
             self.player.shoot(target[0], target[1])
 
-        # Check projectile collisions.
-        remaining_projectiles = []
+        # Player projectiles hitting the boss.
+        remaining_player_projectiles = []
 
         for projectile in self.player.projectiles:
             if self.boss.collides_with(projectile):
                 self.boss.take_damage(projectile.damage)
             else:
-                remaining_projectiles.append(projectile)
+                remaining_player_projectiles.append(projectile)
 
-        self.player.projectiles = remaining_projectiles
+        self.player.projectiles = remaining_player_projectiles
+
+        # Boss projectiles hitting the player.
+        remaining_boss_projectiles = []
+
+        for projectile in self.boss.projectiles:
+            if self.player.collides_with(projectile):
+                self.player.take_damage(projectile.damage)
+            else:
+                remaining_boss_projectiles.append(projectile)
+
+        self.boss.projectiles = remaining_boss_projectiles
 
         # Advance simulation time.
         self.tick += 1
 
-        # Check combat results.
+        # Determine combat outcome.
         if self.boss.is_defeated():
             self.finished = True
             self.winner = "player"
@@ -52,6 +65,7 @@ class GameEngine:
         elif self.tick >= self.max_ticks:
             self.finished = True
             self.winner = "boss"
+
 
     @property
     def elapsed_seconds(self):

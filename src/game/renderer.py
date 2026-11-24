@@ -16,10 +16,11 @@ class Renderer:
         self.clock = pygame.time.Clock()
 
     
+    
     def draw(self, player, boss):
         self.screen.fill(config.BACKGROUND_COLOR)
 
-        # Draw projectiles.
+        # Player projectiles.
         for projectile in player.projectiles:
             pygame.draw.circle(
                 self.screen,
@@ -28,7 +29,16 @@ class Renderer:
                 projectile.radius
             )
 
-        # Draw player.
+        # Boss projectiles.
+        for projectile in boss.projectiles:
+            pygame.draw.circle(
+                self.screen,
+                (255, 80, 80),
+                (int(projectile.x), int(projectile.y)),
+                projectile.radius
+            )
+
+        # Player.
         pygame.draw.circle(
             self.screen,
             config.PLAYER_COLOR,
@@ -36,7 +46,7 @@ class Renderer:
             player.radius
         )
 
-        # Draw boss.
+        # Boss.
         pygame.draw.circle(
             self.screen,
             config.BOSS_COLOR,
@@ -44,7 +54,7 @@ class Renderer:
             boss.radius
         )
 
-        # Draw boss health bar.
+        # Boss health bar.
         bar_width = 300
         bar_height = 15
         bar_x = (config.SCREEN_WIDTH - bar_width) // 2
@@ -64,5 +74,20 @@ class Renderer:
             (bar_x, bar_y, bar_width * health_ratio, bar_height)
         )
 
+        # Player health.
+        font = pygame.font.SysFont(None, 32)
+
+        health_text = font.render(
+            f"HP: {player.health}/{config.PLAYER_MAX_HEALTH}",
+            True,
+            (255, 255, 255)
+        )
+
+        self.screen.blit(
+            health_text,
+            (20, config.SCREEN_HEIGHT - 45)
+        )
+
         pygame.display.flip()
+
 

@@ -70,3 +70,15 @@ class Player:
         self.shoot_cooldown = (
             config.TICKS_PER_SECOND // config.PLAYER_FIRE_RATE
         )
+
+    def take_damage(self, damage):
+        self.health = max(0, self.health - damage)
+
+    def collides_with(self, projectile):
+        distance = pygame.Vector2(
+            self.x - projectile.x,
+            self.y - projectile.y
+        ).length()
+
+        return distance <= self.radius + projectile.radius
+
