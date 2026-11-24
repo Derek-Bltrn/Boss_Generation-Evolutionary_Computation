@@ -64,6 +64,47 @@ Detailed information about the project's design, implementation, methodology, ex
 - Compare evolutionary optimization against baseline search methods.
 - Analyze the diversity and performance of the generated bosses.
 
+## Getting Started
+
+### Prerequisites
+
+- Python 3.11 or newer
+- Git
+- pip
+
+### Installation
+
+**1. Clone the repository**
+
+```bash
+git clone https://github.com/TU_USUARIO/evolutionary-boss-generation.git
+cd evolutionary-boss-generation
+```
+
+**2. Create a virtual environment**
+
+```bash
+python -m venv .venv
+```
+
+**3. Activate the virtual environment**
+
+Windows (PowerShell):
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+Linux / macOS:
+```bash
+source .venv/bin/activate
+```
+
+**4. Install dependencies**
+
+```bash
+python -m pip install -r requirements.txt
+```
+
 ## License
 
 This project is developed for educational purposes as part of the Evolutionary Computation course.
