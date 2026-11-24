@@ -87,7 +87,7 @@ class Renderer:
             health_text,
             (20, config.SCREEN_HEIGHT - 45)
         )
-
+        
         pygame.display.flip()
 
 
