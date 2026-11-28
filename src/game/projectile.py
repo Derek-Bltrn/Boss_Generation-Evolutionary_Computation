@@ -13,7 +13,9 @@ class Projectile:
         direction_y,
         speed=None,
         damage=None,
-        owner="player"
+        owner="player",
+        *,
+        radius: float = 5,
     ):
         self.x = x
         self.y = y
@@ -29,7 +31,7 @@ class Projectile:
         )
 
         self.owner = owner
-        self.radius = 5
+        self.radius = radius
 
         magnitude = math.hypot(direction_x, direction_y)
 

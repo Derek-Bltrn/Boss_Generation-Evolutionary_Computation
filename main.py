@@ -2,13 +2,14 @@
 import pygame
 
 from src.game.engine import GameEngine
+from src.game.boss import BossConfig
 from src.game.renderer import Renderer
 from src.game import config
 
 
-def main():
+def main(*, boss_config: BossConfig = BossConfig()):
     renderer = Renderer()
-    engine = GameEngine()
+    engine = GameEngine(boss_config=boss_config)
 
     running = True
 

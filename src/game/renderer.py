@@ -1,7 +1,23 @@
 
+import math
+from functools import lru_cache
+
 import pygame
 
 from src.game import config
+
+
+@lru_cache(maxsize=16)
+def _boss_projectile_sprite(radius: float) -> pygame.Surface:
+    diameter = 2 * math.ceil(radius) + 1
+    scale = 8
+    scaled_diameter = diameter * scale
+    surface = pygame.Surface((scaled_diameter, scaled_diameter), pygame.SRCALPHA)
+    color = (255, 80, 80)
+    surface.fill((*color, 0))
+    center = scaled_diameter // 2
+    pygame.draw.circle(surface, color, (center, center), round(radius * scale))
+    return pygame.transform.smoothscale(surface, (diameter, diameter))
 
 
 class Renderer:
@@ -31,20 +47,35 @@ class Renderer:
 
         # Boss projectiles.
         for projectile in boss.projectiles:
-            pygame.draw.circle(
-                self.screen,
-                (255, 80, 80),
-                (int(projectile.x), int(projectile.y)),
-                projectile.radius
-            )
+            sprite = _boss_projectile_sprite(projectile.radius)
+            bounds = sprite.get_rect(center=(int(projectile.x), int(projectile.y)))
+            self.screen.blit(sprite, bounds)
 
         # Player.
+        player_center = (int(player.x), int(player.y))
+        invulnerable = player.invulnerability_ticks > 0
+        player_color = config.PLAYER_COLOR
+        if invulnerable:
+            elapsed_ticks = config.PLAYER_INVULNERABILITY_TICKS - player.invulnerability_ticks
+            phase = math.tau * elapsed_ticks / config.PLAYER_INVULNERABLE_PULSE_TICKS
+            blend = (1 - math.cos(phase)) / 2
+            player_color = pygame.Color(*config.PLAYER_INVULNERABLE_COLOR).lerp(
+                config.PLAYER_INVULNERABLE_PULSE_COLOR, blend
+            )
         pygame.draw.circle(
             self.screen,
-            config.PLAYER_COLOR,
-            (int(player.x), int(player.y)),
+            player_color,
+            player_center,
             player.radius
         )
+        if invulnerable:
+            pygame.draw.circle(
+                self.screen,
+                config.PLAYER_INVULNERABLE_OUTLINE_COLOR,
+                player_center,
+                player.radius,
+                width=3,
+            )
 
         # Boss.
         pygame.draw.circle(

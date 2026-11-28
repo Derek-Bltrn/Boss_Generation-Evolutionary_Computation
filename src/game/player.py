@@ -13,6 +13,7 @@ class Player:
         self.radius = config.PLAYER_RADIUS
         self.speed = config.PLAYER_SPEED
         self.health = config.PLAYER_MAX_HEALTH
+        self.invulnerability_ticks = 0
 
         self.projectiles = []
         self.shoot_cooldown = 0
@@ -43,6 +44,9 @@ class Player:
         if self.shoot_cooldown > 0:
             self.shoot_cooldown -= 1
 
+        if self.invulnerability_ticks > 0:
+            self.invulnerability_ticks -= 1
+
         # Update projectiles.
         for projectile in self.projectiles:
             projectile.update()
@@ -72,7 +76,12 @@ class Player:
         )
 
     def take_damage(self, damage):
+        if self.invulnerability_ticks > 0 or damage <= 0:
+            return
+
         self.health = max(0, self.health - damage)
+        if self.health > 0:
+            self.invulnerability_ticks = config.PLAYER_INVULNERABILITY_TICKS
 
     def collides_with(self, projectile):
         distance = pygame.Vector2(

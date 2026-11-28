@@ -1,13 +1,13 @@
 
 from src.game import config
 from src.game.player import Player
-from src.game.boss import Boss
+from src.game.boss import Boss, BossConfig
 
 
 class GameEngine:
-    def __init__(self):
+    def __init__(self, *, boss_config: BossConfig = BossConfig(), seed: int | None = None):
         self.player = Player()
-        self.boss = Boss()
+        self.boss = Boss(seed=seed, configuration=boss_config)
 
         self.tick = 0
         self.max_ticks = config.MAX_COMBAT_TICKS
